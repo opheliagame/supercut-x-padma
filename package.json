@@ -1,0 +1,18 @@
+{
+  "name": "padma-api-2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.5",
+    "ffmpeg.js": "^4.2.9003",
+    "fluent-ffmpeg": "^2.1.2",
+    "minimist": "^1.2.5",
+    "request-promise": "^4.2.6"
+  }
+}
