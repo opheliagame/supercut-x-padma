@@ -22,11 +22,16 @@ const fs = require('fs');
 const ffmpeg = require('fluent-ffmpeg');
 const { exit } = require('process');
 
+const ora = require('ora');
+const { ffprobe } = require('fluent-ffmpeg');
+const { resolve } = require('path');
 const argv = require('minimist')(process.argv.slice(2));
 const url = "https://pad.ma/api";
-const media_url = "https://8.v2.pad.ma";
+// const media_url = "https://8.v2.pad.ma";
+const media_url = "https://media.v2.pad.ma";
 const SEARCH_TERM = argv._[0];
 const RANGE = argv.n ?? 10;
+const DURATION_LIMIT = argv.c;
 const OUTPUT_FOLDER = 'outputs';
 const FOLDER_NAME = argv.dir ?? `${SEARCH_TERM.replace(/\s+/g, "_")}-${Date.now()}`;
 const FILE_NAME = argv.o ?? SEARCH_TERM.replace(/\s+/g, "_");
@@ -58,7 +63,9 @@ const options = {
 };
 
 const getVideoPartElement = (item, video_url) => {
-  if (item.value.includes(SEARCH_TERM)) {
+  let condition = DURATION_LIMIT ? item.value.includes(SEARCH_TERM) && item.duration < DURATION_LIMIT : item.value.includes(SEARCH_TERM);
+  if (condition) {
+    // console.log(item);
     let seekIn = item.in;
     let duration = item.duration;
 
@@ -72,24 +79,27 @@ const getVideoPartElement = (item, video_url) => {
         .size('640x480')
         .autopad('black')
         .on("start", commandLine => {
-          // console.log(`Processing video: ${item.id}`);
+          throbber.text = `Processing video: ${item.id}`;
         })
         .on('error', function (err) {
           console.log('An error occurred: ' + err.message);
           reject(err);
         })
         .on('end', function () {
-          // console.log('Processing finished !');
-          resolve('hello');
+          resolve(file_name);
         })
-        .save(file_name);
+        .save(file_name)
     });
   }
 }
 
 
 const getVideoElement = (id, data) => {
-  let video_url = `${media_url}/${id}/240p1.webm?${data.streams[0]}`;
+  // console.log(data);
+  // let video_url = `${media_url}/${id}/240p1.webm?${data.streams[0]}`;
+  let video_url = `${media_url}/${id}/240p1.webm?${data.modified}`;
+  // console.log(video_url)
+
   const videos = data.layers.transcripts.map(item => getVideoPartElement(item, video_url));
   return Promise.all(videos);
 }
@@ -97,7 +107,7 @@ const getVideoElement = (id, data) => {
 const getItem = (item) => {
   const getItemPostData = {
     id: item.id,
-    keys: ['title', 'layers', 'streams']
+    keys: ['title', 'layers', 'streams', 'modified']
   }
   JSON.stringify(getItemPostData);
 
@@ -112,10 +122,13 @@ const getItem = (item) => {
   }
 
   return rp(getItemRequest)
+    // .then(result => console.log(result))
     .then(result => getVideoElement(item.id, result.data))
     .catch(err => console.log(err))
 }
 
+let throbber = ora('supercut-x-padma').start();
+throbber.spinner = 'growVertical';
 if (!fs.existsSync(`./${OUTPUT_FOLDER}/${FOLDER_NAME}`)) {
   fs.mkdirSync(`./${OUTPUT_FOLDER}/${FOLDER_NAME}`, { recursive: true });
 }
@@ -125,29 +138,66 @@ rp(options)
       console.log("sorry..pad.ma doesn't have anything for your search term at the moment");
       exit(0);
     }
-    console.log('getting files from pad.ma..');
+    throbber.text = 'getting files from pad.ma';
     const getItems = result.data.items.map((item) => getItem(item));
     return Promise.all(getItems);
   })
   .then(() => {
     let output_folder = `./${OUTPUT_FOLDER}/${FOLDER_NAME}`;
     let output_file = `${output_folder}/${FILE_NAME}@padmaSupercut.webm`;
+    
+    throbber.text = `them files are now in : ${output_folder}`;
+    throbber.text = 'merging videos together..';
+    let files = fs.readdirSync(`${output_folder}`);
 
-    console.log(`them files are now in : ${output_folder}`);
-    console.log('merging videos together..');
+    // if(files.length == 0) {
+    //   throbber.stopAndPersist({
+    //     symbol: '✂️',
+    //     text: `sorry, we could not make a supercut!`
+    //   });
+    //   exit(0);
+    // }
     const final = ffmpeg();
-
-    fs.readdirSync(`${output_folder}`).forEach(file => {
-      final.mergeAdd(`${output_folder}/` + file)
-    });
-
-    final.on('error', function (err) {
-      console.log('An error occurred: ' + err.message);
-    })
-      .on('end', function () {
-        console.log(`we made a (rough)supercut, wohoo! : ${output_file}`);
+    const probes = files.map(file =>  {
+      return new Promise((resolve, reject) => {
+        ffmpeg.ffprobe(`${output_folder}/` + file, (err, metadata) => {
+          if(metadata.streams.length < 2) resolve(null)
+          else resolve(`${output_folder}/` + file)
+        })
       })
-      .mergeToFile(`${output_file}`, './');
+    })
+    Promise.all(probes).then(files => {
+      files.forEach(file => {
+        if(file != null) {
+          console.log(file)
+          final.mergeAdd(file)
+        } 
+      })
+      final.mergeToFile(`${output_file}`, './');
+    });
+    
+    // files.forEach(file => {
+    //   ffmpeg.ffprobe(`${output_folder}/` + file, (err, metadata) => {
+    //     if(metadata.streams.length < 2) return 1
+    //     final.mergeAdd(`${output_folder}/` + file)
+    //   }));
+    // });
+
+    final.on('codecData', function(data) {
+      console.log('Input is ' + data.audio + ' audio ' +
+        'with ' + data.video + ' video');
+    });
+    final.on('error', function (err) {
+      console.log('An error occurred: ' + err);
+      throbber.stop();
+    })
+    final.on('end', function () {
+      throbber.stopAndPersist({
+        symbol: '✂️',
+        text: `we made a (rough)supercut, wohoo! : ${output_file}`
+      });
+    })
+    
 
   })
   .catch(err => console.log(err));
