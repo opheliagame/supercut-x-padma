@@ -47,6 +47,8 @@ node index.js "SEARCH_TERM"
 
     takes cuts from the first 10 search results with any length and uses `FILE_NAME` as supercut output file name (without extension), output is always in `.webm`
 
+# LINKS OF THE AMAZING OUTPUT 
+https://drive.google.com/drive/folders/1OejG6FIYhx0UNnvyhC3aLJ_p037wbEGr
 
 ## TODO :woman_technologist:
 
