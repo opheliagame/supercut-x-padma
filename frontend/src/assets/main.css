@@ -1,0 +1,47 @@
+@import './base.css';
+
+/* Firefox */
+* {
+  /* scrollbar-width: thin; */
+  scrollbar-color: var(--secondary) var(--primary);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+
+}
+ 
+*::-webkit-scrollbar-track {
+  background-color: rgb(241 245 249);
+  border-radius: 0.25rem;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(203 213 225);
+  border-radius: 0.25rem;
+  /* outline: 1px solid slategrey; */ 
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    height: 100%;
+  }
+
+  #app {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+
+  }
+}
