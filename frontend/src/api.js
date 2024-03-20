@@ -1,6 +1,6 @@
 const PADMA_API_URL = "https://pad.ma/api"
 const PADMA_MEDIA_URL = "https://media.v2.pad.ma"
-const API_URL = "http://localhost:3001"
+const API_URL = "https://supercut-x-padma.onrender.com"
 
 export const find = async (query, range, cutLength) => {
   const postData = {
