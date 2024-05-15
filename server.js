@@ -2,7 +2,6 @@ const express = require('express')
 const cors = require('cors')
 const fs = require('fs')
 const ffmpeg = require('fluent-ffmpeg')
-const ffmpegPath = require('ffmpeg-static')
 const childProcess = require('child_process')
 const { deleteFile } = require('./functions')
 const { v1: uuidv1, v4: uuidv4 } = require('uuid')
@@ -82,7 +81,7 @@ app.post('/supercut', (req, res) => {
     console.log(`ffmpeg command: ${inputs.join(' ')}`)
     console.log(inputs)
 
-    const child = childProcess.spawn(ffmpegPath, inputs)
+    const child = childProcess.spawn('ffmpeg', inputs)
 
     child.on('close', (code, signal) => {
       console.log(`Process exited with code: ${code} ${signal}`);
