@@ -83,6 +83,14 @@ app.post('/supercut', (req, res) => {
 
     const child = childProcess.spawn('ffmpeg', inputs)
 
+    child.stdout.on('data', function (data) {
+      console.log('stdout: ' + data);
+    });
+    
+    child.stderr.on('data', function (data) {
+      console.log('stderr: ' + data);
+    });
+
     child.on('close', (code, signal) => {
       console.log(`Process exited with code: ${code} ${signal}`);
       if (code === 0) {
