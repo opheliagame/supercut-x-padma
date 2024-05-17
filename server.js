@@ -70,9 +70,9 @@ app.post('/supercut', (req, res) => {
     const filterComplex1 = filter1.join(' ')
     const filterComplex2 = filter2.join('')
     const filterComplex3 = `concat=n=${body.cuts.length}:v=1:a=1[v][a]`
-    const streamMapping = ['-map', '[v]', '-map', '[a]']
+    const streamMapping = ['-map', '"[v]"', '-map', '"[a]"']
     // removing '-fps_mode', 'vfr' to check if it works without variable framerate
-    const filterComplex = ['-filter_complex', `${filterComplex1} ${filterComplex2}${filterComplex3}`]
+    const filterComplex = ['-filter_complex', `"${filterComplex1} ${filterComplex2}${filterComplex3}"`]
     
     
     inputs.push(...filterComplex)
