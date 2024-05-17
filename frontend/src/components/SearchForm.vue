@@ -21,6 +21,7 @@ const onClick = async (e) => {
 
   if(query.value.trim().length == 1) return
 
+  query.value = query.value.toLowerCase()
   console.log("search form: on click method called")
   console.log(query.value, range.value, cutLength.value)
 
