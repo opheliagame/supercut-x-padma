@@ -73,16 +73,12 @@ const handleSendTranscripts = (value) => {
 
 <template>
   
-  <div class="flex flex-col w-full h-full overflow-hidden">
+  <div class="flex flex-col w-full md:h-screen">
     <AppHeader>
       <SearchForm @send-supercut="handleSendSupercut" @send-videos="handleSendVideos" @send-transcripts="handleSendTranscripts" />
     </AppHeader>
 
-    <div v-if="error" class="px-6 md:px-12 py-2 bg-red-50 text-sm">
-      <p>We could not find anything with these search parameters. Please try again.</p>
-    </div>
-
-    <div v-if="clips.length > 0" class="w-full h-full grid md:grid-cols-2 divide-x overflow-hidden">
+    <div v-if="clips.length > 0" class="w-full h-full grid md:grid-cols-[2fr_1fr] lg:grid-cols-2 divide-x">
       <MainSection v-bind:supercut-blob-url="supercutBlobUrl" v-bind:transcripts="transcripts" />
       
       <SideSection v-bind:clips="clips" />

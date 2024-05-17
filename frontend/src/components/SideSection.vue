@@ -28,13 +28,14 @@ watchEffect(() => {
 
 
 <template>
-  <div>
+  <div class="h-full">
     <div class="flex flex-row gap-2 items-center px-6 md:py-2">
       <div class="w-4 h-4 rounded-full bg-green-400"></div>
       <h2 class="text-sm uppercase">Playlist</h2>
     </div>
 
-    <div v-for="clip in clips" class="overflow-y-scroll grid grid-cols-[1fr_2fr] gap-x-4 px-6 py-4">
+    <div class="h-full md:overflow-y-auto">
+      <div v-for="clip in clips" class="grid lg:grid-cols-[1fr_2fr] gap-x-4 px-6 py-4">
       <video :src="clip.url" controls></video>
 
       <div class="flex flex-col gap-2 justify-between">
@@ -48,6 +49,8 @@ watchEffect(() => {
         </div>
       </div>
     </div>
+    </div>
+    
 
   </div>
 

@@ -3,7 +3,7 @@
 
 
 <template>
-  <div class="w-full px-6 lg:px-12 py-4 bg-gray-100 flex flex-col gap-y-2">
+  <div class="w-full px-6 lg:px-12 py-4 bg-gray-100 dark:bg-slate-800 flex flex-col gap-y-2">
     <div>
       <h1 class="text-green-400 font-bold">Supercut with Pad.ma</h1>
     </div>

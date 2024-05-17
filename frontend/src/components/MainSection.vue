@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watchEffect } from 'vue';
+import LoadingDots from './LoadingDots.vue';
 
 
 const props = defineProps({
@@ -20,10 +21,13 @@ watchEffect(() => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 md:gap-8 px-6 lg:px-12 py-4 overflow-hidden">
+  <div class="h-full flex flex-col gap-4 md:gap-8 px-6 lg:px-12 py-4 overflow-hidden">
     <div>
-      <video :src="props.supercutBlobUrl" controls></video>
-
+      <video v-if="props.supercutBlobUrl" :src="props.supercutBlobUrl" controls></video>
+      <div v-else>
+        Cutting you a supercut
+        <LoadingDots character="✂" />
+      </div>
     </div>
 
     <div class="flex flex-col gap-2 md:gap-4">
@@ -31,7 +35,7 @@ watchEffect(() => {
         <div class="w-4 h-4 rounded-full bg-green-400"></div>
         <h2 class="text-sm uppercase">Transcript</h2>
       </div>
-      <div class="overflow-y-scroll">
+      <div class="md:overflow-y-auto">
         <div v-for="transcript in transcripts">
           <p>{{ transcript }}</p>
           <!-- <p>Int. Aliya's bedroom - night. Aliya is on her bed, with the laptop on her lap, in a Skype call with her mother.

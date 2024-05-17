@@ -7,7 +7,7 @@
       Would it be interesting to define something by the stories that people tell about it, by the context it lives in, by the company it keeps.
     </p>
     <p>
-      <a href="https://opheliagame.github.io/projects/freeFall-draft" target="_blank">
+      <a class="green-underline" href="https://opheliagame.github.io/projects/freeFall-draft" target="_blank">
         Here is some semi serious writing on this project
 
       </a>
