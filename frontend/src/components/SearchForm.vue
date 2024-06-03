@@ -3,21 +3,30 @@ import { ref, watchEffect } from 'vue';
 import { find, get, createSupercut } from '../api'
 import LoadingDots from './LoadingDots.vue'
 
-const emit = defineEmits(['send-supercut', 'send-videos', 'send-transcripts'])
+const emit = defineEmits(['send-supercut-name', 'send-supercut-url', 'send-videos', 'send-transcripts'])
 
 const searchForm = ref(null)
 const query = ref('')
 const range = ref(2)
 const cutLength = ref(10)
 const error = ref(false)
+const isClicked = ref(false)
+const isFinished = ref(false)
+
+const onInput = (e) => {
+  error.value = false
+}
 
 const onClick = async (e) => {
   e.preventDefault()
-  // searchForm.value.reset()
+  
   error.value = false
+  isClicked.value = true
+  isFinished.value = false
   emit('send-videos', [])
   emit('send-transcripts', [])
-  emit('send-supercut', null)
+  emit('send-supercut-name', null)
+  emit('send-supercut-url', null)
 
   if(query.value.trim().length == 1) return
 
@@ -32,7 +41,20 @@ const onClick = async (e) => {
   clips = clips.flat(1)
   console.log(clips)
 
-  if(clips.length == 0) error.value = true
+  if(clips.length == 0) {
+    error.value = true
+    isFinished.value = true
+  }
+  else {
+    emit('send-supercut-name', query.value)
+    // reset form params
+    console.log("resetting params")
+    query.value = ''
+    range.value = 2
+    cutLength.value = 10
+    isClicked.value = false
+    isFinished.value = true
+  }
   emit('send-videos', clips)
 
   let transcripts = clips.map(c => c.transcript)
@@ -43,31 +65,9 @@ const onClick = async (e) => {
   const supercut = await createSupercut(clips)
   console.log(supercut)
 
-  emit('send-supercut', supercut)
-
-  // reset form params
-  // query.value = ''
-  // range.value = 2
-  // cutLength.value = 10
-
-  // const videoListData = await getVideoList(query, range, cutLength)
-  // const videoItems = videoListData.map(async (item) => {
-  //   const videoSrc = await getVideo(item.id, query, cutLength)
-  //   return videoSrc
-  // });
-  // let postData = await Promise.all(videoItems)
-  // postData = postData.flat(1).filter(d => d != false)
-  // if (postData.length == 0) return
-  // urls = urls.flat(1).filter(url => url != false)
-  // await Promise.all(urls.slice().map( async url => await fetch(url)))
-  // let supercutUrl = await url
-
+  emit('send-supercut-url', supercut)
 
 }
-
-watchEffect(() => {
-  error.value = false
-})
 
 </script>
 
@@ -75,6 +75,7 @@ watchEffect(() => {
   <form @submit="onClick" ref="searchForm" class="w-full flex md:flex-row flex-col gap-2 header-text dark:inputDarkModeOverride">
     <div class="flex md:block justify-between gap-2">
       <input type="text" name="query" id="input-query" v-model="query" placeholder="What are you thinking about"
+        @input="onInput"
         class="dark:text-slate-400 dark:inputDarkModeOverride rounded-full px-2 py-1 flex-1 lg:min-w-96">
 
       <!-- <button class="md:hidden">></button> -->
@@ -107,15 +108,15 @@ watchEffect(() => {
 
   </form>
 
-  <div v-if="query" class="header-text">
-    <p>You are looking for videos containing some 
+  <div v-if="isClicked && !isFinished" class="header-text">
+    <p>You are looking for things containing some 
     <span class="green-underline">{{ query }}</span>, that are not more than 
     <span class="green-underline">{{ cutLength }}</span> seconds long, and not more than 
     <span class="green-underline">{{ range }}</span> when put together.<LoadingDots />
     </p>
   </div>
 
-  <div v-if="query && error" class="py-2 header-text">
+  <div v-if="isFinished && error" class="py-2 header-text">
     <p>We came up empty. Please try again.</p>
   </div>
 </template>

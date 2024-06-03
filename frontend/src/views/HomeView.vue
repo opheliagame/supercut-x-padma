@@ -7,6 +7,7 @@ import SideSection from '../components/SideSection.vue';
 import AboutSection from '@/components/AboutSection.vue';
 
 const error = ref(null)
+const supercutName = ref(null)
 const supercutBlobUrl = ref(null)
 const clips = ref([])
 const transcripts = ref([])
@@ -36,7 +37,12 @@ const transcripts = ref([])
 //   console.log("ffmpeg loaded")
 // })
 
-const handleSendSupercut = (value) => {
+const handleSendSupercutName = (value) => {
+  console.log(value)
+  supercutName.value = value
+}
+
+const handleSendSupercutUrl = (value) => {
   console.log(value)
   supercutBlobUrl.value = value
 }
@@ -75,11 +81,11 @@ const handleSendTranscripts = (value) => {
   
   <div class="flex flex-col w-full md:h-screen">
     <AppHeader>
-      <SearchForm @send-supercut="handleSendSupercut" @send-videos="handleSendVideos" @send-transcripts="handleSendTranscripts" />
+      <SearchForm @send-supercut-name="handleSendSupercutName" @send-supercut-url="handleSendSupercutUrl" @send-videos="handleSendVideos" @send-transcripts="handleSendTranscripts" />
     </AppHeader>
 
     <div v-if="clips.length > 0" class="w-full h-full grid md:grid-cols-[2fr_1fr] lg:grid-cols-2 divide-x">
-      <MainSection v-bind:supercut-blob-url="supercutBlobUrl" v-bind:transcripts="transcripts" />
+      <MainSection v-bind:supercut-name="supercutName" v-bind:supercut-blob-url="supercutBlobUrl" v-bind:transcripts="transcripts" />
       
       <SideSection v-bind:clips="clips" />
 
