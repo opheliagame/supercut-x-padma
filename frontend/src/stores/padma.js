@@ -19,6 +19,8 @@ export const usePadmaRepositoryStore = defineStore('padma', {
     async searchClipsByTranscript(query, duration) {
       const items = await this._getItemsByTranscript(query, duration)
       const clips = await Promise.all(items.map(item => this._getClipById(item.id)))
+      console.log("found clips")
+      console.log(clips.flat())
       return clips.flat()
     },
 
@@ -27,7 +29,7 @@ export const usePadmaRepositoryStore = defineStore('padma', {
       console.log(clips)
       if(clips.length == 0) return "No clips to combine"
       
-      const url = await combineCuts(clips.clips)
+      const url = await combineCuts(clips.items)
       return url
     },
   
@@ -37,10 +39,11 @@ export const usePadmaRepositoryStore = defineStore('padma', {
         data: {
           keys: ['id', 'title'],
           query: {
-            conditions: [{ key: 'transcripts', operator: '=', value: query }],
+            conditions: [{ key: 'transcripts', operator: '=', value: `${query}` }],
             operator: '&'
           },
-          range: [0, duration],
+          // TODO make range very large and not as an input
+          range: [0, 100],
           sort: [{ key: 'title', operator: '+' }]
         }
       }

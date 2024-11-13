@@ -5,15 +5,14 @@ import { useQueryStore } from "./query";
 export const useClipsStore = defineStore('clips', {
   state: () => {
     return {
-      clips: [],
-      supercut: null,
-      transcripts: [],
+      items: []
     }
   },
   
 
   actions: {
     async findClips() {
+      this.setClips([])
       console.log("findClips")
       const query = useQueryStore()
       const padma = usePadmaRepositoryStore()
@@ -23,16 +22,10 @@ export const useClipsStore = defineStore('clips', {
     },
 
     setClips(clips) {
-      this.clips = clips
+      this.items = clips
     },
 
-    setSupercut(supercut) {
-      this.supercut = supercut
-    },
     
-    setTranscripts(transcripts) {
-      this.transcripts = transcripts
-    }
   }
 
 })
