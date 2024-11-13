@@ -5,4 +5,9 @@
  */
 module.exports = {
   
+  devServer: {
+    // Remove or disable COEP
+    'Cross-Origin-Embedder-Policy': '',
+    'Cross-Origin-Opener-Policy': '',
+  },
 }
