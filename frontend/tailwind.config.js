@@ -2,7 +2,15 @@
 export default {
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'knit-pattern': "url(images/thread-oil.png)",
+      },
+      fontFamily: {
+        'display': ['Teko', 'sans-serif'],
+        'sans': ['Biryani', 'sans-serif'],
+      }
+    },
   },
   plugins: [],
 }

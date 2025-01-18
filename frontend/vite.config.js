@@ -7,7 +7,7 @@ import crossOriginIsolation from 'vite-plugin-cross-origin-isolation'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/supercut-x-padma/',
+  // base: '/supercut-x-padma/',
   plugins: [
     vue(),
     vueJsx(),

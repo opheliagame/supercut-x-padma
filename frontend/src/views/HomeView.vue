@@ -12,7 +12,7 @@ const clips = useClipsStore()
 </script>
 
 <template>
-  <div class="flex flex-col w-full h-screen">
+  <div class="flex flex-col w-full h-screen bg-knit-pattern">
     <AppHeader>
       <SearchForm />
     </AppHeader>
@@ -22,7 +22,7 @@ const clips = useClipsStore()
 
     <div v-if="clips.items.length > 0" 
       class="w-full h-full">
-      <MainSection />
+      <MainSection `/>
 
       <!-- <SideSection v-bind:clips="clips.items" /> -->
     </div>

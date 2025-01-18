@@ -66,7 +66,7 @@ onMounted(() => {
 <template>
   <div class="w-full h-full p-6 relative">
     <video class="w-full h-full overflow-hidden" ref="video" crossorigin="anonymous" v-if="sequencer.currentSequence != null" @timeupdate="onTimeUpdate"
-      controls>
+      >
       <source :src="currentVideo" type="video/mp4">
       Your browser does not support the video tag.
 

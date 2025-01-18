@@ -114,6 +114,8 @@ async function executeFFmpegCommand(cuts, inputs, filterComplex, streamMapping, 
   // await ffmpeg.exec(ffmpegCommand.split(' '))
 
   // Execute ffmpeg command
+  console.log('Executing ffmpeg command:', inputs)
+  console.log('ffmpeg command:', inputs.join(' '))
   await ffmpeg.exec(inputs)
 
   console.log("ffmpeg command executed")
