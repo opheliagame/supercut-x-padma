@@ -1,5 +1,5 @@
 <template>
-  <div class="px-6 md:px-12 py-4 text-xl">
+  <div class="px-6 md:px-12 py-4 text-xl text-fuchsia-700 font-bold bg-yellow-400 shadow-xl">
     <p>
       This project is an attempt at constructing stories, inspired by the idea that a singular object or idea can invoke wildly different feelings and thoughts for different people. 
     </p>
